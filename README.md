@@ -3,3 +3,9 @@
 ## Team
 - CS 4 [__潘煜智__](https://github.com/YCNeo718)
 - CS 3 [__黃蓉容__](https://github.com/Zhong220)
+
+## Run
+```bash
+$ pip install gradio
+$ python app.py
+```
