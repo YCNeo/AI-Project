@@ -7,5 +7,5 @@
 ## Run
 ```bash
 $ pip install gradio
-$ python app.py
+$ python3 app.py
 ```
