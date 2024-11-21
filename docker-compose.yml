@@ -1,0 +1,15 @@
+services:
+  gradio:
+    container_name: AIP-gradio
+    build: 
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "7860:7860"
+    env_file:
+      - ./src/.env
+    networks:
+      - AIP_network
+
+networks:
+  AIP_network:
