@@ -5,7 +5,7 @@ import faiss
 import pickle
 import torch
 from numpy.linalg import norm
-from .get_model import get_model, get_tokenizer
+from .get_model import get_model, get_tokenizer, faiss_index_path, amis_mappings_path
 
 
 def generate_translation_dictionary():
@@ -51,13 +51,13 @@ def generate_translation_dictionary():
     index.add(zh_embeddings)
 
     # Save the FAISS index to disk
-    faiss.write_index(index, os.environ.get("FAISS_INDEX_PATH"))
+    faiss.write_index(index, faiss_index_path)
 
     # Store the mapping from index positions to Amis words
     amis_mappings = [amis_words[i] for i in range(len(amis_words))]
 
     # Save the Amis mappings to disk
-    with open(os.environ.get("AMIS_MAPPINGS_PATH"), "wb") as f:
+    with open(amis_mappings_path, "wb") as f:
         pickle.dump(amis_mappings, f)
 
     print("Translation dictionary generated and saved to disk.")

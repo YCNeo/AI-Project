@@ -1,4 +1,4 @@
-import torch
+import os
 from transformers import AutoModel, AutoTokenizer
 
 
@@ -14,3 +14,7 @@ def get_tokenizer():
     return AutoTokenizer.from_pretrained(
         "jinaai/jina-embeddings-v2-base-zh", trust_remote_code=True
     )
+
+
+faiss_index_path = os.environ.get("FAISS_INDEX_PATH")
+amis_mappings_path = os.environ.get("AMIS_MAPPINGS_PATH")

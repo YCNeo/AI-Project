@@ -3,7 +3,7 @@ import numpy as np
 import faiss
 import pickle
 import torch
-from .get_model import get_model, get_tokenizer
+from .get_model import get_model, get_tokenizer, faiss_index_path, amis_mappings_path
 
 
 def translate_chinese_to_amis(chinese_word):
@@ -11,10 +11,10 @@ def translate_chinese_to_amis(chinese_word):
     Translates a Chinese word to Amis using the precomputed FAISS index and mappings.
     """
     # Load the FAISS index
-    index = faiss.read_index(os.environ.get("FAISS_INDEX_PATH"))
+    index = faiss.read_index(faiss_index_path)
 
     # Load the Amis mappings
-    with open(os.environ.get("AMIS_MAPPINGS_PATH"), "rb") as f:
+    with open(amis_mappings_path, "rb") as f:
         amis_mappings = pickle.load(f)
 
     # Initialize the tokenizer and model
