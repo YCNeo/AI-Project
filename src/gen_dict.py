@@ -13,7 +13,8 @@ def generate_translation_dictionary():
     Generates the translation dictionary by computing embeddings,
     building the FAISS index, and saving the data to disk.
     """
-    df = pd.read_excel(os.environ.get("DOC_PATH"))
+    # df = pd.read_excel(os.environ.get("DOC_PATH"))
+    df = pd.read_excel("/app/doc/dict-zh-amis.xlsx")
     zh_words = df["zhi"].tolist()
     amis_words = df["amis"].tolist()
 

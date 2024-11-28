@@ -5,7 +5,7 @@ from src.translate import translate_chinese_to_amis
 from src.get_model import faiss_index_path, amis_mappings_path
 
 
-def main(word: str):
+def main(word):
 
     # Check if the FAISS index and Amis mappings exist
     if not os.path.exists(faiss_index_path) or not os.path.exists(
@@ -15,9 +15,10 @@ def main(word: str):
 
     # Example usage
     amis_translation = translate_chinese_to_amis(word)
+
     return amis_translation
 
 
-demo = gr.Interface(fn=main, inputs="text", outputs="text")
+client = gr.Interface(fn=main, inputs="text", outputs="text", title="Amis Translator")
 
-demo.launch()
+client.launch()

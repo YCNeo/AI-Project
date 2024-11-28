@@ -16,5 +16,7 @@ def get_tokenizer():
     )
 
 
-faiss_index_path = os.environ.get("FAISS_INDEX_PATH")
-amis_mappings_path = os.environ.get("AMIS_MAPPINGS_PATH")
+# faiss_index_path = os.environ.get("FAISS_INDEX_PATH")
+faiss_index_path = "/app/doc/zh_embeddings.index"
+# amis_mappings_path = os.environ.get("AMIS_MAPPINGS_PATH")
+amis_mappings_path = "/app/doc/amis_mappings.pkl"
