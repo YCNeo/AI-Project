@@ -14,15 +14,8 @@ $ python3 app.py
 $ docker build --rm -t gradio-app .
 $ docker run --name AIP-gradio -p 7860:7860 gradio-app
 
-# run with docker-compose
-$ docker compose up -d --build
-$ docker compose down -v --rmi all
-
 # clean unused
 $ docker container prune -f && docker image prune -f
-
-# compose all
-$ docker container prune -f && docker image prune -f && docker build --rm -t gradio-app . && docker run --name AIP-gradio -p 7860:7860 gradio-app 
 ```
 
 ## Training code
