@@ -1,0 +1,14 @@
+services:
+  gradio:
+    container_name: translator
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "7860:7860"
+    volumes:
+      - gradio-data:/app/data
+    restart: always
+
+volumes:
+  gradio-data:

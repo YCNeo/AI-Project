@@ -7,15 +7,14 @@
 ## Run
 ```bash
 # run without docker
-$ pip install gradio
-$ python3 app.py
+pip install gradio
+python3 app.py
 
 # run with docker
-$ docker build --rm -t gradio-app .
-$ docker run --name AIP-gradio -p 7860:7860 gradio-app
+docker compose up -d --build
 
-# clean unused
-$ docker container prune -f && docker image prune -f
+# stop and clean
+docker compose down -v --rmi all
 ```
 
 ## Training code

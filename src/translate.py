@@ -40,9 +40,10 @@ def translate_chinese_to_amis(chinese_word):
         distances, indices = index.search(query_embedding, k=1)
         idx = indices[0][0]
         distance = distances[0][0]
+        print(f"{chinese_word} distance: {distance}")
         # Set a threshold for the distance to filter out irrelevant results
-        threshold = 0.45  # Adjust this threshold based on your requirements
-        if distance > threshold:
+        threshold = 0.8  # Adjust this threshold based on your requirements
+        if distance < threshold:
             return "Translation not found"
         if idx < len(amis_mappings):
             return amis_mappings[idx]

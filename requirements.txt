@@ -4,3 +4,4 @@ pandas
 transformers
 faiss-cpu
 openpyxl
+jieba
