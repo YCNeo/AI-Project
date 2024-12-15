@@ -3,6 +3,8 @@ import numpy as np
 import faiss
 import pickle
 import torch
+import jieba
+from pypinyin import pinyin, Style
 from concurrent.futures import ThreadPoolExecutor
 from .get_model import get_model, get_tokenizer, faiss_index_path, amis_mappings_path
 
@@ -42,13 +44,13 @@ def translate_chinese_to_amis(chinese_word):
         distance = distances[0][0]
         print(f"{chinese_word} distance: {distance}")
         # Set a threshold for the distance to filter out irrelevant results
-        threshold = 0.8  # Adjust this threshold based on your requirements
+        threshold = 0.8
         if distance < threshold:
-            return "Translation not found"
+            return get_pinyin(chinese_word)
         if idx < len(amis_mappings):
             return amis_mappings[idx]
         else:
-            return "Translation not found"
+            return get_pinyin(chinese_word)
 
     with ThreadPoolExecutor() as executor:
         future_embedding = executor.submit(compute_embedding)
@@ -57,3 +59,9 @@ def translate_chinese_to_amis(chinese_word):
         amis_translation = future_search.result()
 
     return amis_translation
+
+
+def get_pinyin(word):
+    roman_pin_yin = "[roman_pinyin] "
+    pinyin_list = pinyin(word, style=Style.TONE3)
+    return roman_pin_yin + " ".join([item[0] for item in pinyin_list])
