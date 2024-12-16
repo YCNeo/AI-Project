@@ -14,13 +14,8 @@ if not os.path.exists(faiss_index_path) or not os.path.exists(
 
 def main(sentence):
     print("Received sentence:", sentence)
-    words = jieba.lcut(sentence)
-    print("Segmented words:", words)
-    results = [f"Received sentence: {sentence}"]
-    for word in words:
-        if word.strip():
-            results.append(f"{word}: {translate_chinese_to_amis(word)}")
-    return results
+    results = f"Received sentence: {sentence}\n\nTranslation:\n"
+    return translate_chinese_to_amis(sentence, results)
 
 
 client = gr.Interface(fn=main, inputs="text", outputs="text", title="Amis Translator")

@@ -9,9 +9,9 @@ from concurrent.futures import ThreadPoolExecutor
 from .get_model import get_model, get_tokenizer, faiss_index_path, amis_mappings_path
 
 
-def translate_chinese_to_amis(chinese_word):
+def translate_chinese_to_amis(chinese_sentence, results):
     """
-    Translates a Chinese word to Amis using the precomputed FAISS index and mappings.
+    Translates a Chinese sentence to Amis using the precomputed FAISS index and mappings.
     """
     # Load the FAISS index
     index = faiss.read_index(faiss_index_path)
@@ -25,40 +25,53 @@ def translate_chinese_to_amis(chinese_word):
     model = get_model()
     model.eval()
 
-    def compute_embedding():
+    def compute_embedding(text):
         with torch.no_grad():
             inputs = tokenizer(
-                [chinese_word], padding=True, truncation=True, return_tensors="pt"
+                [text], padding=True, truncation=True, return_tensors="pt"
             )
             outputs = model(**inputs)
-            query_embedding = outputs.last_hidden_state[:, 0, :].numpy()
+            embedding = outputs.last_hidden_state[:, 0, :].numpy()
             # Normalize embedding
-            query_embedding = query_embedding / np.linalg.norm(
-                query_embedding, axis=1, keepdims=True
-            )
-        return query_embedding
+            embedding = embedding / np.linalg.norm(embedding, axis=1, keepdims=True)
+        return embedding
 
     def search_faiss(query_embedding):
         distances, indices = index.search(query_embedding, k=1)
         idx = indices[0][0]
         distance = distances[0][0]
-        print(f"{chinese_word} distance: {distance}")
-        # Set a threshold for the distance to filter out irrelevant results
-        threshold = 0.8
-        if distance < threshold:
-            return get_pinyin(chinese_word)
-        if idx < len(amis_mappings):
-            return amis_mappings[idx]
+        return idx, distance
+
+    # Compute embedding for the entire sentence
+    sentence_embedding = compute_embedding(chinese_sentence)
+    sentence_idx, sentence_distance = search_faiss(sentence_embedding)
+
+    # Set a threshold for the distance to filter out irrelevant results
+    threshold = 0.8
+
+    if sentence_distance < threshold:
+        # Split the sentence into words and process each word
+        words = jieba.lcut(chinese_sentence)
+        for word in words:
+            if word.strip():
+                word_embedding = compute_embedding(word)
+                word_idx, word_distance = search_faiss(word_embedding)
+                if word_distance < threshold:
+                    translation = get_pinyin(word)
+                else:
+                    translation = (
+                        amis_mappings[word_idx]
+                        if word_idx < len(amis_mappings)
+                        else get_pinyin(word)
+                    )
+                results += f"{word}: {translation}\n"
+    else:
+        if sentence_idx < len(amis_mappings):
+            results += f"\t{chinese_sentence}:\t{amis_mappings[sentence_idx]}\n"
         else:
-            return get_pinyin(chinese_word)
+            results += f"\t{chinese_sentence}:\t{get_pinyin(chinese_sentence)}\n"
 
-    with ThreadPoolExecutor() as executor:
-        future_embedding = executor.submit(compute_embedding)
-        query_embedding = future_embedding.result()
-        future_search = executor.submit(search_faiss, query_embedding)
-        amis_translation = future_search.result()
-
-    return amis_translation
+    return results
 
 
 def get_pinyin(word):
