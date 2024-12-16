@@ -12,3 +12,6 @@ services:
 
 volumes:
   gradio-data:
+
+networks:
+  ai-project-network:
